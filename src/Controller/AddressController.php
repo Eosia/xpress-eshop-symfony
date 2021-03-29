@@ -34,7 +34,8 @@ class AddressController extends AbstractController
         $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
 
-        if ($form->isSubmitted() && $form->isValid()) {
+        if ($form->isSubmitted() && $form->isValid())
+        {
 
             $user = $this->getUser();
             $address->setUser($user);
@@ -42,22 +43,13 @@ class AddressController extends AbstractController
             $entityManager->persist($address);
             $entityManager->flush();
 
-            return $this->redirectToRoute('address_index');
+            $this->addFlash('address_message', 'Your address has been saved');
+            return $this->redirectToRoute('account');
         }
 
         return $this->render('address/new.html.twig', [
             'address' => $address,
             'form' => $form->createView(),
-        ]);
-    }
-
-    /**
-     * @Route("/{id}", name="address_show", methods={"GET"})
-     */
-    public function show(Address $address): Response
-    {
-        return $this->render('address/show.html.twig', [
-            'address' => $address,
         ]);
     }
 
@@ -72,7 +64,8 @@ class AddressController extends AbstractController
         if ($form->isSubmitted() && $form->isValid()) {
             $this->getDoctrine()->getManager()->flush();
 
-            return $this->redirectToRoute('address_index');
+            $this->addFlash('address_message', 'Your address has been edited');
+            return $this->redirectToRoute('account');
         }
 
         return $this->render('address/edit.html.twig', [
@@ -92,6 +85,7 @@ class AddressController extends AbstractController
             $entityManager->flush();
         }
 
-        return $this->redirectToRoute('address_index');
+        $this->addFlash('address_message', 'Your address has been deleted');
+        return $this->redirectToRoute('account');
     }
 }
